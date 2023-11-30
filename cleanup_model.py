@@ -1,7 +1,9 @@
+import datetime
 import tkinter
 from tkinter import filedialog
 import os
 from date_handler import date_handler
+from cleanup_custom_exceptions import *
 
 class cleanup_model():
 
@@ -32,26 +34,45 @@ class cleanup_model():
         self.target_sender_names = []
 
     def add_sender_email(self, sender_email_in : str) -> None:
-        if sender_email_in.isspace() or sender_email_in == "":
+        '''
+        Adds one individual email to the the target_sender_emails list attribute.
+        Ignores empty spaces or input WITHOUT "@" symbol and converts input to lower case. This is done
+        because emails ignore casing.
+        :param sender_email_in:
+        :return:
+        '''
+        if sender_email_in.isspace() or sender_email_in == "" or "@" not in sender_email_in:
             return
         if sender_email_in.lower() not in self.target_sender_emails:
             self.target_sender_emails.append(sender_email_in.lower())
 
     def add_sender_name(self, sender_name_in : str):
-        if sender_name_in.isspace() or sender_name_in == "":
+        '''
+        Adds one individual sender name to the target_sender_emails list attribute.
+        Ignores empty spaces or names WITH "@" symbol. This is because some emails
+        have an email address and name that are the same.
+        :param sender_name_in:
+        :return:
+        '''
+        if sender_name_in.isspace() or sender_name_in == "" or "@" in sender_name_in:
             return
         if sender_name_in.lower() not in self.target_sender_names:
             self.target_sender_names.append(sender_name_in.lower())
 
     def add_subject_keyword(self, keyword_in: str):
+        #TODO consider removing this feature??
         if keyword_in.isspace() or keyword_in == "":
             return
         if keyword_in not in self.target_subject_keyphrases:
             self.target_subject_keyphrases.append(keyword_in)
 
-    #example change
+
+    def set_start_date(self, date_input: str) -> None:
+        self.target_start_date = self.date_utility.convert_string_to_date(date_input)
 
 
+    def set_end_date(self, date_input: str) -> None:
+        self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
 
     def digest_input(self, user_input: str, delimiter: str):
         '''
