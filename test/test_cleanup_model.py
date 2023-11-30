@@ -147,6 +147,21 @@ class test_cleanup_model(unittest.TestCase):
 		self.assertTrue(model.is_name_in_target_list('teSt'))
 		self.assertFalse(model.is_name_in_target_list('John, Connor'))
 
+	def test_is_any_key_word_in_subject(self):
+		model = self.model
+
+		example_words = "Theresa thought that I ate the apple"
+		example_list = example_words.split(' ')
+
+		for word in example_list:
+			model.add_subject_keyword(word)
+
+		#Check that "There" is not mistaken for similarly spelled words like "Theresa"
+		self.assertFalse(model.is_any_key_word_in_subject("There once was a sailor"))
+		self.assertTrue(model.is_any_key_word_in_subject("Theresa saw the sailor"))
+
+
+
 
 
 

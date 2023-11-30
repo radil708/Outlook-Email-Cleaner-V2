@@ -13,6 +13,8 @@ class outlook_connection():
         self.user_email = None
         self.mailbox = None
 
+        self.emails_to_delete = []
+
         self.all_available_users = [] #list that will contain all users
 
         ################## STARTUP FUNCTIONS ##################
@@ -30,6 +32,10 @@ class outlook_connection():
         if not hasattr(cls, 'instance'):
             cls.instance = super(outlook_connection, cls).__new__(cls)
         return cls.instance
+
+    def clear_emails_to_delete_list(self):
+        self.emails_to_delete = []
+        self.emails_deleted = 0
 
     def connect_to_outlook(self):
         # Connect to Application
@@ -62,8 +68,17 @@ class outlook_connection():
     def get_all_emails_from_inbox(self):
         pass
 
-    def delete_email(self):
-        pass
+    def add_email_to_deletion_list(self, email_item: client.CDispatch ) -> None:
+        self.emails_to_delete.append(email_item)
+
+
+    def delete_email(self,email_item: client.CDispatch) -> None:
+        email_item.Delete()
+
+    def delete_emails(self):
+        #TODO maybe not here? Want to track how many emails deleted, move to controller?
+        for email_item in self.emails_to_delete:
+            email_item.Delete()
 
     def extract_sender_address_from_email(self, email_item: client.CDispatch) -> str:
         address = email_item.SenderEmailAddress
@@ -71,14 +86,14 @@ class outlook_connection():
         if email_item == None or email_item.isspace() or email_item == "":
             return " "
         else:
-            return address
+            return address.lower().strip()
 
     def extract_sender_name_from_email(self, email_item: client.CDispatch) -> str:
         name = email_item.SenderName
         if name == None or name.isspace or name == "":
             return " "
         else:
-            return name
+            return name.lower().strip()
 
     def extract_timestamp_from_email(self, email_item: client.CDispatch) -> datetime:
         return datetime.fromtimestamp(email_item.SentOn.timestamp(), email_item.SentOn.tzinfo)
@@ -89,7 +104,7 @@ class outlook_connection():
         if email_subject == None or email_subject.isspace() or email_subject == "":
             return " "
         else:
-            return email_subject
+            return email_subject.lower().strip()
 
 
     def close_connection(self):
