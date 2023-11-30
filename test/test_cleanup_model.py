@@ -58,7 +58,7 @@ class test_cleanup_model(unittest.TestCase):
 	def test_add_subject_keyword(self):
 		'''
 		Testing adding subject keywords.
-		Words with different casing WILL count as different words
+		Words with different casing will NOT count as different words
 		:return:
 		'''
 		model = self.model
@@ -69,9 +69,9 @@ class test_cleanup_model(unittest.TestCase):
 		for word in example_list:
 			model.add_subject_keyword(word)
 
-		self.assertEqual(12, len(model.target_subject_keyphrases))
+		self.assertEqual(11, len(model.target_subject_keyphrases))
 
-		actual_list = ['Hello', 'World', 'hello', 'foobar', "I'm", 'happy', 'clap', 'along', 'dancing', 'on', 'quick', 'sand']
+		actual_list = ['hello', 'world', 'foobar', "i'm", 'happy', 'clap', 'along', 'dancing', 'on', 'quick', 'sand']
 		self.assertEqual(actual_list, model.target_subject_keyphrases)
 
 

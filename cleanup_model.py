@@ -64,7 +64,7 @@ class cleanup_model():
         if keyword_in.isspace() or keyword_in == "":
             return
         if keyword_in not in self.target_subject_keyphrases:
-            self.target_subject_keyphrases.append(keyword_in)
+            self.target_subject_keyphrases.append(keyword_in.lower())
 
 
     def set_start_date(self, date_input: str) -> None:
@@ -74,7 +74,28 @@ class cleanup_model():
     def set_end_date(self, date_input: str) -> None:
         self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
 
-    def digest_input(self, user_input: str, delimiter: str):
+    def is_address_in_target_list(self, email_address: str) -> bool:
+        email_address = email_address.lower().strip()
+        if email_address in self.target_sender_emails:
+            return True
+        else:
+            return False
+
+    def is_name_in_target_list(self, sender_name: str) -> bool:
+        sender_name = sender_name.lower().strip()
+        if sender_name in self.target_sender_names:
+            return True
+        else:
+            return False
+
+    def is_any_key_word_in_subject(self, subject_str: str) -> bool:
+        #breakdown subject into a sentence i.e. split by space
+        subject_as_list = self.digest_input(subject_str, ' ', apply_lower=True)
+        #returns True if any element in target keyphrases exist in the subject
+        return any(element in self.target_subject_keyphrases for element in subject_as_list)
+
+
+    def digest_input(self, user_input: str, delimiter: str, apply_lower: bool = False):
         '''
         Will be used to convert a long string of user input into a list.
         Split by delimiter and removes leading and lagging spaces.
@@ -89,6 +110,10 @@ class cleanup_model():
 
         for input_element in split_input:
             input_element = input_element.strip()
+
+            if apply_lower is True:
+                input_element = input_element.lower()
+
             digested_list.append(input_element)
 
         return digested_list
