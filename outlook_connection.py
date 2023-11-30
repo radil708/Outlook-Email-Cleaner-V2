@@ -1,14 +1,7 @@
 import win32com.client as client
 from inbox_analyzer import inbox_analyzer
 import time
-
-
-'''
-email item properties:
-    sender_name = email_item.SenderName
-    sender_address = email_item.SenderEmailAddress
-    date = email_item.SentOn.timestamp()
-'''
+from datetime import datetime
 
 class outlook_connection():
 
@@ -72,6 +65,33 @@ class outlook_connection():
     def delete_email(self):
         pass
 
+    def extract_sender_address_from_email(self, email_item: client.CDispatch) -> str:
+        address = email_item.SenderEmailAddress
+        #TODO this might hit error if no string returned by attribute
+        if email_item == None or email_item.isspace() or email_item == "":
+            return " "
+        else:
+            return address
+
+    def extract_sender_name_from_email(self, email_item: client.CDispatch) -> str:
+        name = email_item.SenderName
+        if name == None or name.isspace or name == "":
+            return " "
+        else:
+            return name
+
+    def extract_timestamp_from_email(self, email_item: client.CDispatch) -> datetime:
+        return datetime.fromtimestamp(email_item.SentOn.timestamp(), email_item.SentOn.tzinfo)
+
+    def extract_subject_from_email(self, email_item: client.CDispatch) -> str:
+        email_subject = email_item.Subject
+
+        if email_subject == None or email_subject.isspace() or email_subject == "":
+            return " "
+        else:
+            return email_subject
+
+
     def close_connection(self):
         #self.com_obj.Close()
         self.com_obj.Quit()
@@ -112,4 +132,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    print("Hello")

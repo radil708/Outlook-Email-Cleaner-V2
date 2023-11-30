@@ -18,23 +18,26 @@ all_emails = selected_directory.Items
 
 counter = 0
 
-# for email in all_emails:
-#     counter += 1
-#     #TO get name from email below
-#     print((email.SenderName).replace(" ", "_"))
-#
-#     #name problem is that some names have commas in them
-#     #check if name alread in email list so probably check email first
-#     #lstrip and rstrip any spaces in names
-#
-#     #email address
-#     #print(email.SenderEmailAddress)
-#
-#     if counter == 100:
-#         break
-#
-#
-# exit(0)
+for email in all_emails:
+    counter += 1
+    #TO get name from email below
+    print(type(email))
+    exit(0)
+    print((email.SenderName).replace(" ", "_"))
+    #email_class = <class 'win32com.client.CDispatch'>
+
+    #name problem is that some names have commas in them
+    #check if name alread in email list so probably check email first
+    #lstrip and rstrip any spaces in names
+
+    #email address
+    #print(email.SenderEmailAddress)
+
+    if counter == 100:
+        break
+
+
+exit(0)
 
 
 

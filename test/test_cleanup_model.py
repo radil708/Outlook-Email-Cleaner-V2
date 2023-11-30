@@ -120,6 +120,34 @@ class test_cleanup_model(unittest.TestCase):
 		self.assertEqual([], model.target_subject_keyphrases)  # list of keyphrases
 		self.assertEqual([], model.target_sender_names)  # list of sender names
 
+	def test_is_address_in_list(self):
+		model = self.model
+
+		sender_email_list_inputs = ["tEst@example.com", "Test@example.com", "MissingAtSymbol", "foO@bar.com", "\t", "",
+																" ",
+																"\n"]
+		for email in sender_email_list_inputs:
+			model.add_sender_email(email)
+
+		self.assertTrue(model.is_address_in_target_list('teSt@example.com'))
+		self.assertTrue(model.is_address_in_target_list('Foo@Bar.com'))
+
+		self.assertFalse(model.is_address_in_target_list("Kylo@StarWars.net"))
+
+	def test_is_name_in_list(self):
+		model = self.model
+
+		sender_name_inputs = ["tEst", "Test", "John, Smith", "foO@bar.com", "\t", "",
+													" ",
+													"\n"]
+		for sender in sender_name_inputs:
+			model.add_sender_name(sender)
+
+		self.assertTrue(model.is_name_in_target_list('john, smith'))
+		self.assertTrue(model.is_name_in_target_list('teSt'))
+		self.assertFalse(model.is_name_in_target_list('John, Connor'))
+
+
 
 
 
