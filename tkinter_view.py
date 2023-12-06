@@ -5,16 +5,20 @@ from tkinter import ttk
 class tkinter_view():
 
     def __init__(self):
+        self.title_for_all_windows = 'Ramzi\'s Email Deleter Version 2'
         self.user_email_choice = None
+        self.welcome_window = None
 
     def set_user_email_choice(self, user_email_choice_in: str):
         self.user_email_choice = user_email_choice_in
         # TODO Delete
         print(self.user_email_choice)
+        #TODO use quit or destroy??
+        self.welcome_window.quit()
 
     def build_welcome_window(self, user_email_choices: list):
         window = tk.Tk()
-        window.title('Ramzi\'s Email Deleter Version 2')
+        window.title(self.title_for_all_windows)
         window.geometry('400x200')
 
         user_selection = tk.StringVar()
@@ -37,6 +41,9 @@ class tkinter_view():
 
         header_label.pack(pady=10)
         input_frame.pack(pady=15)
+        self.welcome_window = window
+
+        #TODO probably have controller manage mainloop
         window.mainloop()
 
 

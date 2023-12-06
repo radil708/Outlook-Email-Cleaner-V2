@@ -33,7 +33,7 @@ class cleanup_model():
         self.target_subject_keyphrases = []
         self.target_sender_names = []
 
-    def add_sender_email(self, sender_email_in : str) -> None:
+    def add_individual_sender_email(self, sender_email_in : str) -> None:
         '''
         Adds one individual email to the the target_sender_emails list attribute.
         Ignores empty spaces or input WITHOUT "@" symbol and converts input to lower case. This is done
@@ -46,7 +46,7 @@ class cleanup_model():
         if sender_email_in.lower() not in self.target_sender_emails:
             self.target_sender_emails.append(sender_email_in.lower())
 
-    def add_sender_name(self, sender_name_in : str):
+    def add_individual_sender_name(self, sender_name_in : str):
         '''
         Adds one individual sender name to the target_sender_emails list attribute.
         Ignores empty spaces or names WITH "@" symbol. This is because some emails
@@ -59,7 +59,7 @@ class cleanup_model():
         if sender_name_in.lower() not in self.target_sender_names:
             self.target_sender_names.append(sender_name_in.lower())
 
-    def add_subject_keyword(self, keyword_in: str):
+    def add_individual_subject_keyword(self, keyword_in: str):
         #TODO consider removing this feature??
         if keyword_in.isspace() or keyword_in == "":
             return
@@ -147,6 +147,28 @@ class cleanup_model():
                 setting_as_list.append(processed_line_list[0].strip())
 
         return setting_as_list
+
+    def convert_list_to_user_input(self, setting_input_list: list, join_char: str) -> str:
+        #TODO make one specifically for name and email address?
+        return join_char.join(setting_input_list)
+
+    def add_all_sender_emails(self, user_input: str):
+        '''
+        User input will be a string coming from user
+        in format email_1, email_2, ... etc.
+        :param user_input:
+        :return:
+        '''
+
+        delimited_user_choices = self.digest_input(user_input, delimiter=',', apply_lower=True)
+        for choice in delimited_user_choices:
+            self.add_individual_sender_email(choice)
+
+    def add_all_sender_names(self, user_input: str):
+        delimited_user_choices = self.digest_input(user_input,delimiter="|", apply_lower=True)
+        for choice in delimited_user_choices:
+            self.add_individual_sender_name(choice)
+
 
 
 
