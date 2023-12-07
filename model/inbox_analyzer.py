@@ -8,17 +8,26 @@ class inbox_analyzer():
         self.address_tracker_dict = {}
         self.name_tracker_dict = {}
 
-    def clear_trackers(self):
+    def clear_trackers(self) -> None :
+        '''
+        Resets values stored in the tracker to empty.
+        Run this after every analysis
+        :return: None
+        '''
         self.unique_address_list = []
         self.unique_name_list = []
         self.address_tracker_dict = {}
         self.name_tracker_dict = {}
 
-    """
-    check name, if @ in then ignore else add to name
-    """
 
-    def track_sender(self, sender_name: str):
+    def track_sender(self, sender_name: str) -> None:
+        '''
+        Stores sender names of an email item and counts how many times
+        that sender has been encountered in the search. Sender names
+        that match the email address will be ignored.
+        :param sender_name: @str sender name of an email item
+        :return: None
+        '''
         #check if @ in name
         if '@' in sender_name:
             return
@@ -28,7 +37,13 @@ class inbox_analyzer():
         else:
             self.name_tracker_dict[sender_name] += 1
 
-    def track_email_address(self, email_address: str):
+    def track_email_address(self, email_address: str) -> None:
+        '''
+        Stores sender email addresses of an email item and counts how many times
+        that email address has been encountered in the search
+        :param email_address: @str sender email address.
+        :return: None
+        '''
         if email_address not in self.unique_address_list:
             self.unique_address_list.append(email_address)
             self.address_tracker_dict[email_address] = 1

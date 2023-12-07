@@ -118,5 +118,10 @@ class date_handler():
 
 		return datetime.fromtimestamp(msg.SentOn.timestamp(), msg.SentOn.tzinfo)
 
-	def convert_date_from_item_to_datetime(self, item_date):
+	def convert_date_from_item_to_datetime(self, item_date) -> datetime:
+		'''
+		Converts the SentOn property of the email item into a datetime.
+		:param item_date: SentOn property of an email item
+		:return: @datetime SentOn propert as a datetime.
+		'''
 		return datetime.fromtimestamp(item_date.timetimestamp(), item_date.tzinfo)

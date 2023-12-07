@@ -16,7 +16,15 @@ class tkinter_view():
         #TODO use quit or destroy??
         self.welcome_window.quit()
 
+    def get_user_email_choice(self) -> str:
+        if self.user_email_choice == None:
+            raise ValueError("No User Email Assigned")
+
+        return self.user_email_choice
+
     def build_welcome_window(self, user_email_choices: list):
+        #TODO have raise error if user_email_choices is blank
+        #maybe make an error window?
         window = tk.Tk()
         window.title(self.title_for_all_windows)
         window.geometry('400x200')

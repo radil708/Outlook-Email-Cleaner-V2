@@ -1,5 +1,5 @@
 import win32com.client as client
-from inbox_analyzer import inbox_analyzer
+from model.inbox_analyzer import inbox_analyzer
 import time
 from datetime import datetime
 

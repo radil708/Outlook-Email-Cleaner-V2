@@ -1,7 +1,6 @@
 import datetime
 import unittest
-from cleanup_model import cleanup_model
-from date_handler import date_handler
+from model.cleanup_model import cleanup_model
 
 
 class test_cleanup_model(unittest.TestCase):
