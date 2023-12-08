@@ -12,31 +12,34 @@ class main_window(tk.Tk):
     self.header_label = tk.Label(master=self, text="Please Enter Deletion Conditions")
     self.header_label.pack(side="top")
 
+    self.input_frame_grid = tk.Frame()
+
     self.setup_toolbar()
 
     self.name_widgets_dict = self.create_input_frame_dict(
-      self.make_text_input_frames("Sender Name(s):","Doe, Jane | linkedIn | Advertising Company"))
+      self.make_text_input_frames("Sender Name(s):","Doe, Jane | linkedIn | Advertising Company", row=0))
 
     self.address_widgets_dict = self.create_input_frame_dict(
-      self.make_text_input_frames("Sender Email\nAddress(es):","ex@aol.com, state@us.gov, uni@eduroam.net")
+      self.make_text_input_frames("Sender Email Address(es):","ex@aol.com, state@us.gov, uni@eduroam.net", row=1)
     )
 
     self.keywords_widgets_dict = self.create_input_frame_dict(
-      self.make_text_input_frames("Sender Keyword(s):", "hello, world, foo, bar")
+      self.make_text_input_frames("Sender Keyword(s):", "hello, world, foo, bar", row=2)
     )
 
     self.date_start_widgets_dict = self.create_date_frame_dict(
-      self.make_text_input_date_frame("Date Lower Boundary", "mm/dd/yyy")
+      self.make_text_input_date_frame("Date Lower Boundary:", "mm/dd/yyy", row=3)
     )
 
     self.date_end_widgets_dict = self.create_date_frame_dict(
-      self.make_text_input_date_frame("Date Upper Boundary", "mm/dd/yyy")
+      self.make_text_input_date_frame("Date Upper Boundary:", "mm/dd/yyy", row=4)
     )
 
     # ["Sender Name(s)", "Doe, Jane | linkedIn | Advertising Company"], \
     # ["Sender Email Address(es):", "example@aol.com, state@us.gov, school@eduroam.net"],
     # ["Sender Key Word(s):", ]
 
+    self.input_frame_grid.pack()
 
 
   def setup_toolbar(self):
@@ -47,26 +50,26 @@ class main_window(tk.Tk):
     self.toolbar_menu.add_cascade(label="File", menu=self.file_dropdown)
     self.file_dropdown.add_command(label="Export Current Conditions", command= self.quit) #TODO change command
     self.file_dropdown.add_command(label="Import Conditions", command=self.quit)
+    self.file_dropdown.add_command(label="Exit", command=lambda : exit(0))  # TODO change command
 
     self.analyze_dropdown = tk.Menu(master=self.toolbar_menu, tearoff=False)
     self.toolbar_menu.add_cascade(label="Analyze", menu=self.analyze_dropdown)
     self.analyze_dropdown.add_command(label="By Sender Address", command=self.quit) #maybe add these settings after somehow?
     self.analyze_dropdown.add_command(label="By Sender Name", command= self.quit)
 
-  def make_text_input_frames(self, left_side_label : str, text_gray_hint: str):
-    frame = tk.Frame(master=self)
-    label = tk.Label(master=frame, text=left_side_label)
-    button_upload = tk.Button(master=frame, text="Upload")
-    button_clear = tk.Button(master=frame, text="Clear")
+  def make_text_input_frames(self, left_side_label : str, text_gray_hint: str, row: int):
+    label = tk.Label(master= self.input_frame_grid, text=left_side_label)
+    button_upload = tk.Button(master= self.input_frame_grid, text="Upload")
+    button_clear = tk.Button(master= self.input_frame_grid, text="Clear")
     string_var = tk.StringVar()
 
-    entry = entry_with_placeholder(text_hint=text_gray_hint, master=frame, width=45)
+    entry = entry_with_placeholder(text_hint=text_gray_hint, master= self.input_frame_grid, width=45)
 
-    label.pack(side=tk.LEFT,padx=5)
-    entry.pack(side=tk.LEFT, padx = 5,)
-    button_clear.pack(side=tk.LEFT, padx=5)
-    button_upload.pack(side=tk.LEFT, padx=5)
-    frame.pack(pady=5)
+    label.grid(row=row, column=0, padx=5, pady=5, sticky="e")
+    entry.grid(row=row, column=1, padx=5,pady=5)
+    button_clear.grid(row=row, column=2, padx=5,pady=5)
+    button_upload.grid(row=row, column=3, padx=5,pady=5)
+    #frame.pack(pady=5)
 
     # label.grid(row=0, column=0, padx=5,pady=5)
     # entry.grid(row=0, column=1,padx=5, pady=5)
@@ -75,7 +78,7 @@ class main_window(tk.Tk):
     # frame.grid(row=0, column=0, sticky="")
     # frame.grid_columnconfigure(0, weight=1)
 
-    return [frame, label, entry, string_var, button_clear, button_upload]
+    return [label, entry, string_var, button_clear, button_upload]
 
   def create_input_frame_dict(self, input_frame_vars : list) -> dict:
     '''
@@ -84,13 +87,13 @@ class main_window(tk.Tk):
     :return: @dict dictionary used to access widgets of each input frame where key is a string
               and value is the widget. i.e. temp_dict["label"] returns the label widget
     '''
-    dict_inputs_keys = ["frame", "label", "entry", "string_var", "button_clear", "button_upload"]
+    dict_inputs_keys = ["label", "entry", "string_var", "button_clear", "button_upload"]
     temp_dict = {}
     for i in range(len(dict_inputs_keys)):
       temp_dict[dict_inputs_keys[i]] = input_frame_vars[i]
     return temp_dict
 
-  def make_text_input_date_frame(self,left_side_label : str, text_gray_hint: str):
+  def make_text_input_date_frame(self,left_side_label : str, text_gray_hint: str, row: int):
     '''
     Used to make the date condition input frames
     :param left_side_label: @str the label denoting what entry will be
@@ -98,26 +101,26 @@ class main_window(tk.Tk):
     :return: @list list of containing widgets
     '''
 
-    frame = tk.Frame(master=self)
-    label = tk.Label(master=frame, text=left_side_label)
-    entry = entry_with_placeholder(text_hint=text_gray_hint, master=frame, width=45)
+    #frame = tk.Frame(master=self)
+    label = tk.Label(master=self.input_frame_grid, text=left_side_label)
+    entry = entry_with_placeholder(text_hint=text_gray_hint, master=self.input_frame_grid, width=45)
     string_var = tk.StringVar()
-    button_clear = tk.Button(master=frame, text="Clear")
+    button_clear = tk.Button(master=self.input_frame_grid, text="Clear")
 
-    label.pack(side=tk.LEFT, padx=5)
-    entry.pack(side="left", padx=5)
-    button_clear.pack(side="left", padx=5)
-    frame.pack(pady=5)
+    label.grid(row=row, column=0, sticky="e",padx=5,pady=5)
+    entry.grid(row=row, column=1,padx=5,pady=5)
+    button_clear.grid(row=row, column=2,padx=5,pady=5)
+    #frame.pack(pady=5)
 
     # label.place(relx=0, rely=1.0)
     # entry.place(relx=5)
     # button_clear.place(relx=10)
     # frame.pack(pady=5)
 
-    return [frame, label, entry, string_var, button_clear]
+    return [label, entry, string_var, button_clear]
 
   def create_date_frame_dict(self, date_frame_widgets: list):
-    dict_inputs_keys = ["frame", "label", "entry", "string_var", "button_clear"]
+    dict_inputs_keys = ["label", "entry", "string_var", "button_clear"]
     temp_dict = {}
     for i in range(len(dict_inputs_keys)):
       temp_dict[dict_inputs_keys[i]] = date_frame_widgets[i]
