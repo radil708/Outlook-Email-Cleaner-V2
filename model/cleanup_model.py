@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import filedialog
 import os
-from date_handler import date_handler
+from model.date_handler import date_handler
 
 
 class cleanup_model():
