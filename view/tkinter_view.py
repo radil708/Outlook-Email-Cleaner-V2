@@ -76,7 +76,7 @@ class tkinter_view():
     #TODO probably have controller manage mainloop
     #window.mainloop()
 
-  def build_condition_input_frames(self, condition_name_label: str, entry_hint_text : str):
+  #def build_condition_input_frames(self, condition_name_label: str, entry_hint_text : str):
 
   def build_main_window(self):
     self.welcome_window.destroy()  # hide window to show other one
