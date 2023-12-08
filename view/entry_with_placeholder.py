@@ -18,7 +18,7 @@ class entry_with_placeholder(Entry):
     self.insert(0, self.text_hint)
     self['fg'] = self.hint_color
 
-  def foc_in(self, *args):
+  def foc_in(self, *args): #*args needed to be able to set as a button command
     if self['fg'] == self.hint_color:
       self.delete('0', 'end')
       self['fg'] = self.user_input_color
@@ -26,4 +26,9 @@ class entry_with_placeholder(Entry):
   def foc_out(self, *args):
     if not self.get():
       self.place_hint()
+
+  def clear_entry(self, *args):#*args needed to be able to set as a button command
+    if self['fg'] == self.user_input_color:
+      self.delete('0', 'end')
+
 

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from entry_with_placeholder import entry_with_placeholder
+from view.entry_with_placeholder import entry_with_placeholder
 
 class main_window(tk.Tk):
 
