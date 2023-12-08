@@ -11,6 +11,7 @@ class main_window(tk.Tk):
     self.eval('tk::PlaceWindow . center')
     self.header_label = tk.Label(master=self, text="Please Enter Deletion Conditions")
     self.header_label.pack(side="top")
+    #TODO prevent window resizing
 
     self.input_frame_grid = tk.Frame()
 
@@ -20,7 +21,7 @@ class main_window(tk.Tk):
       self.make_text_input_frames("Sender Name(s):","Doe, Jane | linkedIn | Advertising Company", row=0))
 
     self.address_widgets_dict = self.create_input_frame_dict(
-      self.make_text_input_frames("Sender Email Address(es):","ex@aol.com, state@us.gov, uni@eduroam.net", row=1)
+      self.make_text_input_frames("Sender Email Address(es):","jack@aol.com, Mass@us.gov, uni@eduroam.net", row=1)
     )
 
     self.keywords_widgets_dict = self.create_input_frame_dict(
@@ -41,6 +42,12 @@ class main_window(tk.Tk):
 
     self.input_frame_grid.pack()
 
+    self.bottom_frame = tk.Frame()
+    self.switch_act_button = tk.Button(master=self.bottom_frame, text="Switch Accounts")
+    self.run_button = tk.Button(master=self.bottom_frame, text="Run")
+    self.switch_act_button.pack(side=tk.LEFT, padx=(0,200), pady=20)
+    self.run_button.pack(side=tk.RIGHT, padx=(200,0), pady=20)
+    self.bottom_frame.pack()
 
   def setup_toolbar(self):
     self.toolbar_menu = tk.Menu()
