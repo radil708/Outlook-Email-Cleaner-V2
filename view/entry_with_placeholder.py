@@ -14,6 +14,7 @@ class entry_with_placeholder(Entry):
 
     self.place_hint()
 
+
   def place_hint(self):
     self.insert(0, self.text_hint)
     self['fg'] = self.hint_color
@@ -30,5 +31,8 @@ class entry_with_placeholder(Entry):
   def clear_entry(self, *args):#*args needed to be able to set as a button command
     if self['fg'] == self.user_input_color:
       self.delete('0', 'end')
+      self.place_hint()
+      self.master.focus_set() #remove cursor from entry widget
+
 
 

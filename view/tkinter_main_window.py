@@ -11,7 +11,7 @@ class main_window(tk.Tk):
     self.eval('tk::PlaceWindow . center')
     self.header_label = tk.Label(master=self, text="Please Enter Deletion Conditions")
     self.header_label.pack(side="top")
-    #TODO prevent window resizing
+    #TODO prevent window resizing TODO dummy widget keep?
 
     self.input_frame_grid = tk.Frame()
 
@@ -111,6 +111,7 @@ class main_window(tk.Tk):
     #frame = tk.Frame(master=self)
     label = tk.Label(master=self.input_frame_grid, text=left_side_label)
     entry = entry_with_placeholder(text_hint=text_gray_hint, master=self.input_frame_grid, width=45)
+
     string_var = tk.StringVar()
     button_clear = tk.Button(master=self.input_frame_grid, text="Clear")
 
