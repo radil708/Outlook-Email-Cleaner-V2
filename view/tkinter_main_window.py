@@ -7,11 +7,18 @@ class main_window(tk.Tk):
   def __init__(self):
     tk.Tk.__init__(self)
     self.title("Ramzi's Email Deleter V2")
-    self.geometry('600x300')
+    self.geometry('600x310')
     self.eval('tk::PlaceWindow . center')
+    self.upper_user_frame = tk.Frame(master=self)
+    self.upper_user_frame.pack(fill="both", expand=1)
+    self.current_user = ""
+    self.user_label = tk.Label(master=self.upper_user_frame, text="Current Account: ")
+    self.user_label.pack(side=tk.RIGHT, padx= 15, pady=(5,0))
+
     self.header_label = tk.Label(master=self, text="Please Enter Deletion Conditions")
     self.header_label.pack(side="top")
     #TODO prevent window resizing TODO dummy widget keep?
+
 
     self.input_frame_grid = tk.Frame()
 
@@ -36,10 +43,6 @@ class main_window(tk.Tk):
       self.make_text_input_date_frame("Date Upper Boundary:", "mm/dd/yyy", row=4)
     )
 
-    # ["Sender Name(s)", "Doe, Jane | linkedIn | Advertising Company"], \
-    # ["Sender Email Address(es):", "example@aol.com, state@us.gov, school@eduroam.net"],
-    # ["Sender Key Word(s):", ]
-
     self.input_frame_grid.pack()
 
     self.bottom_frame = tk.Frame()
@@ -48,6 +51,9 @@ class main_window(tk.Tk):
     self.switch_act_button.pack(side=tk.LEFT, padx=(0,200), pady=20)
     self.run_button.pack(side=tk.RIGHT, padx=(200,0), pady=20)
     self.bottom_frame.pack()
+
+  def set_current_account_label(self, user_email: str):
+    self.user_label.configure(text=f"Current Account: {user_email}")
 
   def setup_toolbar(self):
     self.toolbar_menu = tk.Menu()
@@ -61,8 +67,10 @@ class main_window(tk.Tk):
 
     self.analyze_dropdown = tk.Menu(master=self.toolbar_menu, tearoff=False)
     self.toolbar_menu.add_cascade(label="Analyze", menu=self.analyze_dropdown)
-    self.analyze_dropdown.add_command(label="By Sender Address", command=self.quit) #maybe add these settings after somehow?
-    self.analyze_dropdown.add_command(label="By Sender Name", command= self.quit)
+    self.analyze_dropdown.add_command(label="By Sender Address") #maybe add these settings after somehow?
+    self.analyze_dropdown.add_command(label="By Sender Name")
+    #self.analyze_dropdown.ch
+
 
   def make_text_input_frames(self, left_side_label : str, text_gray_hint: str, row: int):
     label = tk.Label(master= self.input_frame_grid, text=left_side_label)

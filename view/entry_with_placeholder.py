@@ -25,7 +25,7 @@ class entry_with_placeholder(Entry):
       self['fg'] = self.user_input_color
 
   def foc_out(self, *args):
-    if not self.get():
+    if not self.get() or self.get().isspace():
       self.place_hint()
 
   def clear_entry(self, *args):#*args needed to be able to set as a button command

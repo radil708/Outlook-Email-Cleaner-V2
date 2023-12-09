@@ -30,8 +30,8 @@ class welcome_window(tk.Tk):
       textvariable=self.user_selection_var)
 
     self.select_button = ttk.Button(master=self.input_frame,
-                                   text="Select",
-                                   command=lambda: self.set_user_email_choice(self.user_selection_var.get()))
+                                   text="Select")
+    #command=lambda: self.set_user_email_choice(self.user_selection_var.get())
 
     self.combobox_widget.pack(side="left", padx=5)
     self.select_button.pack(side="right")

@@ -6,3 +6,4 @@ class event_assigner():
     clear_button.configure(command=entry_widget_to_clear.clear_entry)
 
 
+
