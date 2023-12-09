@@ -21,8 +21,8 @@ class app_controller():
     self.welcome_window = None
     self.event_assigner = event_assigner()
 
-  def assign_analyze_by_name(self):
-    self.main_window.analyze_dropdown.set
+  # def set_dropdown_commands(self):
+  #   self.welcome_window.analyze_dropdown.add_command(label="By Sender Address", command=lambda : print("Hello"))
 
   def assign_clear_buttons(self):
     '''
@@ -53,6 +53,13 @@ class app_controller():
     self.welcome_window.select_button.configure(command=self.pass_user_choice_to_main_window)
     self.welcome_window.mainloop()
 
+  def analyze_by_name_func(self):
+    pass
+    #TODO do this
+    #Run outlook connection command
+    #show window popup please wait
+    #show ask for name of file
+
   def pass_user_choice_to_main_window(self, *args):
     '''
     Links welcome window to main window
@@ -66,6 +73,9 @@ class app_controller():
     self.welcome_window = None
     self.main_window = main_window()
     self.main_window.set_current_account_label(current_user)
+    self.main_window.set_function_analyze(lambda : print("Hello"), lambda: print("Hello"))
+
+
     self.assign_clear_buttons()
     self.main_window.switch_act_button.configure(command=self.go_back_to_select_accounts_command)
     self.main_window.mainloop()

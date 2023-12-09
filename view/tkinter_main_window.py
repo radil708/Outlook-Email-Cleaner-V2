@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from view.entry_with_placeholder import entry_with_placeholder
+from types import FunctionType
 
 class main_window(tk.Tk):
 
@@ -52,8 +53,23 @@ class main_window(tk.Tk):
     self.run_button.pack(side=tk.RIGHT, padx=(200,0), pady=20)
     self.bottom_frame.pack()
 
+
   def set_current_account_label(self, user_email: str):
     self.user_label.configure(text=f"Current Account: {user_email}")
+
+  def set_function_analyze(self, func_name: FunctionType, func_address: FunctionType):
+    """
+    Reason Note***:  Unlike Buttons which can be reconfigured after instantiation,
+    commands can NOT be reconfigured and must have a command associated at the time
+    of instatiation. Since the functions I want to link to this command exist
+    in the model, I will have the controller call this function and
+    pass the model's function to it.
+    :param func_name:
+    :param func_address:
+    :return:
+    """
+    self.analyze_dropdown.add_command(label="By Sender Name", command=func_name)
+    self.analyze_dropdown.add_command(label="By Sender Address", command=func_address)
 
   def setup_toolbar(self):
     self.toolbar_menu = tk.Menu()
@@ -67,8 +83,8 @@ class main_window(tk.Tk):
 
     self.analyze_dropdown = tk.Menu(master=self.toolbar_menu, tearoff=False)
     self.toolbar_menu.add_cascade(label="Analyze", menu=self.analyze_dropdown)
-    self.analyze_dropdown.add_command(label="By Sender Address") #maybe add these settings after somehow?
-    self.analyze_dropdown.add_command(label="By Sender Name")
+    #self.analyze_dropdown.add_command(label="By Sender Address") #maybe add these settings after somehow?
+    #self.analyze_dropdown.add_command(label="By Sender Name")
     #self.analyze_dropdown.ch
 
 
