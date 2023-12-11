@@ -162,6 +162,7 @@ class main_window(tk.Tk):
 
 
 
+#TODO delete all mains from other files when complete
 def main():
   x = main_window()
   x.mainloop()

@@ -63,10 +63,13 @@ class outlook_connection():
         #TODO if user_email is None raise error
         self.mailbox = self.outlook_connection.\
             Folders(self.user_email).Folders('Inbox').Items
+        #TODO delete
+        print(f"MAILBOX set to : {self.user_email}")
         #iterate through this list to get all emails
 
-    def get_all_emails_from_inbox(self):
-        pass
+    def get_all_emails_from_inbox(self) -> client.CDispatch:
+        #TODO raise error if not set???
+        return self.mailbox #class is win32com.client.CDispatch
 
     def add_email_to_deletion_list(self, email_item: client.CDispatch ) -> None:
         self.emails_to_delete.append(email_item)
@@ -83,17 +86,17 @@ class outlook_connection():
     def extract_sender_address_from_email(self, email_item: client.CDispatch) -> str:
         address = email_item.SenderEmailAddress
         #TODO this might hit error if no string returned by attribute
-        if email_item == None or email_item.isspace() or email_item == "":
+        if address == None or address.isspace() or address == "":
             return " "
         else:
             return address.lower().strip()
 
     def extract_sender_name_from_email(self, email_item: client.CDispatch) -> str:
         name = email_item.SenderName
-        if name == None or name.isspace or name == "":
+        if name == None or name.isspace() or name == "":
             return " "
         else:
-            return name.lower().strip()
+            return name
 
     def extract_timestamp_from_email(self, email_item: client.CDispatch) -> datetime:
         return datetime.fromtimestamp(email_item.SentOn.timestamp(), email_item.SentOn.tzinfo)
@@ -121,6 +124,7 @@ def main():
     counter = 0
     y = inbox_analyzer()
 
+    exit(0)
     inbox_length = len(x.mailbox)
 
     for email in x.mailbox:
@@ -128,8 +132,8 @@ def main():
         item_name = email.SenderName
         item_address = email.SenderEmailAddress
         print(f"{counter} of {inbox_length}", end='')
-        y.track_sender(item_name)
-        y.track_email_address(item_address)
+        y.record_individual_sender(item_name)
+        y.record_individual_email_address(item_address)
         if 500 % counter == 0:
             time.sleep(0.1)
         print('\r', end='')
@@ -147,4 +151,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print("Hello")
+    main()

@@ -20,7 +20,7 @@ class inbox_analyzer():
         self.name_tracker_dict = {}
 
 
-    def track_sender(self, sender_name: str) -> None:
+    def record_individual_sender(self, sender_name: str) -> None:
         '''
         Stores sender names of an email item and counts how many times
         that sender has been encountered in the search. Sender names
@@ -37,7 +37,7 @@ class inbox_analyzer():
         else:
             self.name_tracker_dict[sender_name] += 1
 
-    def track_email_address(self, email_address: str) -> None:
+    def record_individual_email_address(self, email_address: str) -> None:
         '''
         Stores sender email addresses of an email item and counts how many times
         that email address has been encountered in the search

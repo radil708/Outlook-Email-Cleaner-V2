@@ -3,20 +3,23 @@ from view import tkinter_view
 from view.tkinter_main_window import main_window
 from view.tkinter_welcome_window import welcome_window
 from event_assigner import event_assigner
+from view.progressbar_window import progress_bar_window
 
-TEST = True
+TEST = False
 
 class app_controller():
 
   def __init__(self):
     self.model = cleanup_model.cleanup_model()
     self.main_window = None
-    #self.inbox_analyzer = inbox_analyzer.inbox_analyzer()
-    #self.outlook_connection = outlook_connection.outlook_connection() #starts connection
+    self.inbox_analyzer = inbox_analyzer.inbox_analyzer()
+    self.outlook_connection = outlook_connection.outlook_connection() #starts connection
     #self.view = tkinter_view.tkinter_view()
+    self.progress_bar_window = None
 
-    #TODO right code to get users from outlook
-    self.outlook_user_test = ["e1","e2"]
+    if TEST == True:
+      #TODO right code to get users from outlook
+      self.outlook_user_test = ["e1","e2"]
 
     self.welcome_window = None
     self.event_assigner = event_assigner()
@@ -41,6 +44,32 @@ class app_controller():
 
     return
 
+  def analyze_by_sender_names(self, *args):
+    '''
+    helper func to open welome window
+    :return:
+    '''
+    all_emails = self.outlook_connection.get_all_emails_from_inbox()
+    self.progress_bar_window = progress_bar_window(self.outlook_connection, self.inbox_analyzer)
+    self.progress_bar_window.set_head_label("Analyzing Inbox Emails By Name")
+    self.progress_bar_window.setup()
+    self.progress_bar_window.mainloop()
+
+    # #TODO delete
+    # counter = 0
+    # for email in all_emails:
+    #   #print(email.SenderName)
+    #   sender_name = self.outlook_connection.extract_sender_name_from_email(email)
+    #   print(sender_name)
+    #   #TODO MAKE ACTUAL STATUS BAR
+    #   self.inbox_analyzer.record_individual_sender(sender_name)
+    #   counter+= 1
+    #   print(f"Read through {counter} emails")
+    #   self.progress_bar_window.increment()
+    #
+    # print(self.inbox_analyzer.name_tracker_dict)
+
+
   def open_welcome_window(self):
     '''
     function that starts
@@ -49,7 +78,7 @@ class app_controller():
     if self.main_window != None:
       self.main_window.destroy()
 
-    self.welcome_window = welcome_window(self.outlook_user_test)
+    self.welcome_window = welcome_window(self.outlook_connection.all_available_users)
     self.welcome_window.select_button.configure(command=self.pass_user_choice_to_main_window)
     self.welcome_window.mainloop()
 
@@ -73,7 +102,8 @@ class app_controller():
     self.welcome_window = None
     self.main_window = main_window()
     self.main_window.set_current_account_label(current_user)
-    self.main_window.set_function_analyze(lambda : print("Hello"), lambda: print("Hello"))
+    self.outlook_connection.set_user(current_user)
+    self.main_window.set_function_analyze(self.analyze_by_sender_names, lambda: print("Hello")) #TODO change func
 
 
     self.assign_clear_buttons()
