@@ -9,6 +9,8 @@ class main_window(tk.Tk):
     tk.Tk.__init__(self)
     self.title("Ramzi's Email Deleter V2")
     self.geometry('600x310')
+    self.resizable(False,False)
+    #self.protocol("WM_DELETE_WINDOW", lambda : exit(0))
     self.eval('tk::PlaceWindow . center')
     self.upper_user_frame = tk.Frame(master=self)
     self.upper_user_frame.pack(fill="both", expand=1)

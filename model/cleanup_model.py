@@ -4,7 +4,7 @@ import os
 from model.date_handler import date_handler
 import win32com.client as client
 from model.email_item_data_extractor import email_item_data_extractor
-
+from model.cleanup_custom_exceptions import *
 
 class cleanup_model():
 
@@ -96,8 +96,10 @@ class cleanup_model():
         if date_input.isspace() or date_input == "" or date_input == None:
             return
         else:
-            self.target_start_date = self.date_utility.convert_string_to_date(date_input)
-
+            try:
+                self.target_start_date = self.date_utility.convert_string_to_date(date_input)
+            except ValueError:
+                raise DateConversionError
 
     def set_end_date(self, date_input: str) -> None:
         '''
@@ -109,8 +111,10 @@ class cleanup_model():
         if date_input.isspace() or date_input == "" or date_input == None:
             return
         else:
-            self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
-
+            try:
+                self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
+            except ValueError:
+                raise DateConversionError
     def is_address_in_target_list(self, email_address: str) -> bool:
         '''
         Checks to see if the param email_address is in the list of target_sender_emails list i.e.
@@ -291,12 +295,21 @@ class cleanup_model():
         else:
             return False
 
-    def are_both_date_conditions_filled(self):
-        # TODO test in conjunction with add_raw_user_date
-        if self.target_start_date == None or self.target_end_date == None:
+    def is_only_one_date_condition_filled(self):
+        if (self.target_start_date != None and self.target_end_date == None) \
+            or (self.target_end_date != None and self.target_start_date == None):
             return True
         else:
             return False
+
+
+
+    def are_both_date_conditions_filled(self):
+        # TODO test in conjunction with add_raw_user_date
+        if self.target_start_date == None or self.target_end_date == None:
+            return False
+        else:
+            return True
 
     def setup_condition_checks(self):
         #TODO test and run before run_condition_check
@@ -312,19 +325,20 @@ class cleanup_model():
             self.or_conditions_to_check.append(self.check_subject)
 
     def run_condition_check(self, email_item: client.CDispatch) -> bool:
-
         or_match = False
-
-        for each in self.or_conditions_to_check:
-            or_match = each(email_item)
-            if or_match == True:
-                break
-
         date_match = False
 
-        #No date to match just set true
+        #If only dates are used then ignore names, address, keywords
+        if len(self.or_conditions_to_check) == 0:
+            or_match = True
+        else:
+            for each in self.or_conditions_to_check:
+                or_match = each(email_item)
+                if or_match == True:
+                    break
 
-        if self.are_both_date_conditions_filled() is True:
+        #If no dates are used then ignore dates as a conditions
+        if self.are_both_date_conditions_filled() is False:
             date_match = True
         else:
             #TODO need to have a date check function

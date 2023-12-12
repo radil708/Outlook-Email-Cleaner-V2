@@ -7,6 +7,7 @@ from view.progressbar_window import progress_bar_window
 from model.constants import *
 from view.email_deletion_progress_window import email_deletion_progress_window
 from tkinter import messagebox, Tk
+from model.cleanup_custom_exceptions import *
 TEST = False
 
 class app_controller():
@@ -18,6 +19,7 @@ class app_controller():
     self.outlook_connection = outlook_connection.outlook_connection() #starts connection
     #self.view = tkinter_view.tkinter_view()
     self.progress_bar_window = None
+    #self.messagebox_root_window = Tk().withdraw()
 
     if TEST == True:
       #TODO right code to get users from outlook
@@ -108,18 +110,30 @@ class app_controller():
 
   def run_deletion_command(self):
     #check if sure
-    user_input = self.main_window.get_all_entries()
-    self.model.add_raw_user_date(user_input)
-    self.model.setup_condition_checks()
+    #check conversion errors too
+    try:
+      user_input = self.main_window.get_all_entries()
+      self.model.add_raw_user_date(user_input)
+      self.model.setup_condition_checks()
+
+    except DateConversionError:
+      messagebox.showerror("INPUT ERROR", "Start Date or End Date are not formatted Correctly\nPlease make sure the date conditions are in the following format: mm/dd/yyyy")
+      self.model.reset_deletion_conditions()
+      return
 
     if self.model.are_conditions_empty():
-      root_wind = Tk().withdraw()
       messagebox.showinfo("Error","You Must Enter Some Condition Before Proceeding")
+      self.model.reset_deletion_conditions()
+      return
+    if self.model.is_only_one_date_condition_filled():
+      self.model.reset_deletion_conditions()
+      messagebox.showinfo("Error", "If start date has a value, end date must too and vice versa")
       return
 
     else:
       deletion_progress_window = email_deletion_progress_window(self.outlook_connection, self.model)
       deletion_progress_window.mainloop()
+
 
 #TODO delete this func
 def test_main_window():

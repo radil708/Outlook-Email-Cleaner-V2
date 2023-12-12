@@ -8,6 +8,7 @@ class welcome_window(tk.Tk):
     super().__init__()
     self.title("Ramzi's Email Deleter V2")
     self.geometry('400x200')
+    self.resizable(False, False)
     self.eval('tk::PlaceWindow . center')
     self.user_choice = None
     self.header_label = ttk.Label(master=self,
