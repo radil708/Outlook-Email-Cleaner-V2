@@ -1,4 +1,4 @@
-
+from model.constants import *
 
 class inbox_analyzer():
 
@@ -55,6 +55,7 @@ class inbox_analyzer():
         self.name_tracker_dict = dict(sorted(self.name_tracker_dict.items(),key=lambda item: item[1],reverse=True))
 
         with open(filename, 'w') as file_writer:
+            file_writer.write(SENDER_NAME_C + " : Qty Emails\n")
             for key, value in self.name_tracker_dict.items():
                 file_writer.write(key + ' : ' + str(value) + '\n')
 
@@ -63,6 +64,7 @@ class inbox_analyzer():
         self.address_tracker_dict = dict(sorted(self.address_tracker_dict.items(), key=lambda item: item[1],reverse=True))
 
         with open(filename, 'w') as file_writer:
+            file_writer.write(SENDER_ADDRESS_C + " : Qty Emails\n")
             for key, value in self.address_tracker_dict.items():
                 file_writer.write(key + ' : ' + str(value) + '\n')
 

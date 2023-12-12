@@ -1,4 +1,4 @@
-from tkinter import Entry, END
+from tkinter import Entry, END, StringVar
 #TODO SUPER USEFUL ADD TO REPO ON ITS OWN
 
 class entry_with_placeholder(Entry):

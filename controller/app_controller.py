@@ -4,6 +4,7 @@ from view.tkinter_main_window import main_window
 from view.tkinter_welcome_window import welcome_window
 from event_assigner import event_assigner
 from view.progressbar_window import progress_bar_window
+from model.constants import *
 
 TEST = False
 
@@ -49,25 +50,10 @@ class app_controller():
     helper func to open welome window
     :return:
     '''
-    all_emails = self.outlook_connection.get_all_emails_from_inbox()
-    self.progress_bar_window = progress_bar_window(self.outlook_connection, self.inbox_analyzer)
-    self.progress_bar_window.set_head_label("Analyzing Inbox Emails By Name")
+
+    self.progress_bar_window = progress_bar_window(self.outlook_connection, self.inbox_analyzer,SENDER_NAME_C)
     self.progress_bar_window.setup()
     self.progress_bar_window.mainloop()
-
-    # #TODO delete
-    # counter = 0
-    # for email in all_emails:
-    #   #print(email.SenderName)
-    #   sender_name = self.outlook_connection.extract_sender_name_from_email(email)
-    #   print(sender_name)
-    #   #TODO MAKE ACTUAL STATUS BAR
-    #   self.inbox_analyzer.record_individual_sender(sender_name)
-    #   counter+= 1
-    #   print(f"Read through {counter} emails")
-    #   self.progress_bar_window.increment()
-    #
-    # print(self.inbox_analyzer.name_tracker_dict)
 
 
   def open_welcome_window(self):
