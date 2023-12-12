@@ -2,11 +2,15 @@ import tkinter
 from tkinter import filedialog
 import os
 from model.date_handler import date_handler
+import win32com.client as client
+from model.email_item_data_extractor import email_item_data_extractor
 
 
 class cleanup_model():
 
     def __init__(self):
+
+        self.data_extractor_utility = email_item_data_extractor()
 
         self.date_utility = date_handler()
 
@@ -120,10 +124,15 @@ class cleanup_model():
         else:
             return False
 
+    def check_email_address(self,email_item: client.CDispatch) -> bool:
+        # TODO test
+        return self.is_address_in_target_list(self.data_extractor_utility.extract_sender_address(email_item))
+
     def is_name_in_target_list(self, sender_name: str) -> bool:
         '''
         Checks to see if the param sender_name is in the list of target_sender_names list i.e.
         Returns true if the email address belongs to an email that should be deleted.
+        Helper function to check_email_name
         :param sender_name: @str the name of a peron/org who sent an email.
         :return: @bool True if the email is in the target_sender_names list, false otherwise
         '''
@@ -132,6 +141,15 @@ class cleanup_model():
             return True
         else:
             return False
+
+    def check_email_name(self,email_item: client.CDispatch) -> bool:
+        #TODO test
+        '''
+
+        :param email_item:
+        :return:
+        '''
+        return self.is_name_in_target_list(self.data_extractor_utility.extract_sender_name(email_item))
 
     def is_any_key_word_in_subject(self, subject_str: str) -> bool:
         '''
@@ -144,6 +162,15 @@ class cleanup_model():
         subject_as_list = self.digest_input(subject_str, ' ', apply_lower=True)
         #returns True if any element in target keyphrases exist in the subject
         return any(element in self.target_subject_keyphrases for element in subject_as_list)
+
+    def check_subject(self, email_item: client.CDispatch) -> bool:
+        return self.is_any_key_word_in_subject(self.data_extractor_utility.extract_subject(email_item))
+
+    def is_email_between_dates(self, email_item: client.CDispatch) -> bool:
+        if self.are_both_date_conditions_filled() is False:
+            raise RuntimeError("Both dates must be set")
+        email_date = self.data_extractor_utility.extract_timestamp(email_item)
+        return self.date_utility.is_between_dates(self.target_start_date, self.target_end_date, email_date)
 
 
     def digest_input(self, user_input: str, delimiter: str, apply_lower: bool = False) -> list:
@@ -249,6 +276,70 @@ class cleanup_model():
         self.add_all_keywords(user_input["keywords"])
         self.set_start_date(user_input["start date"])
         self.set_end_date(user_input["end date"])
+
+    def are_conditions_empty(self) -> bool:
+        #TODO test in conjunction with add_raw_user_date
+        '''
+        Returns True if no conditions were addedd
+        :return:
+        '''
+
+        if self.target_sender_emails == [] and self.target_start_date == None \
+            and self.target_end_date == None  and self.target_subject_keyphrases == [] \
+            and self.target_sender_names == []:
+            return True
+        else:
+            return False
+
+    def are_both_date_conditions_filled(self):
+        # TODO test in conjunction with add_raw_user_date
+        if self.target_start_date == None or self.target_end_date == None:
+            return True
+        else:
+            return False
+
+    def setup_condition_checks(self):
+        #TODO test and run before run_condition_check
+        '''
+
+        :return:
+        '''
+        if self.target_sender_emails != []:
+            self.or_conditions_to_check.append(self.check_email_address)
+        if self.target_sender_names != []:
+            self.or_conditions_to_check.append(self.check_email_name)
+        if self.target_subject_keyphrases != []:
+            self.or_conditions_to_check.append(self.check_subject)
+
+    def run_condition_check(self, email_item: client.CDispatch) -> bool:
+
+        or_match = False
+
+        for each in self.or_conditions_to_check:
+            or_match = each(email_item)
+            if or_match == True:
+                break
+
+        date_match = False
+
+        #No date to match just set true
+
+        if self.are_both_date_conditions_filled() is True:
+            date_match = True
+        else:
+            #TODO need to have a date check function
+            date_match = self.is_email_between_dates(email_item)
+
+        return or_match and date_match
+
+
+
+
+
+
+
+
+
 
 
 

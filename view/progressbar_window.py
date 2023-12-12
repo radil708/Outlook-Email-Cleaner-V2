@@ -4,6 +4,7 @@ from model.inbox_analyzer import inbox_analyzer
 from model.outlook_connection import outlook_connection
 from view.file_saving_window import file_saving_window
 from model.constants import *
+from model.email_item_data_extractor import email_item_data_extractor
 
 from time import sleep
 class progress_bar_window(tk.Tk):
@@ -21,6 +22,7 @@ class progress_bar_window(tk.Tk):
     self.max_value = len(self.all_emails)
     self.loading_text = "Analyzed" + " " + str(self.email_counter) + " of " + str(self.max_value)
     self.bar_increment_value = 100/self.max_value
+    self.data_extractor = email_item_data_extractor()
     self.after(1000, self.increment)
 
   def setup(self):
@@ -32,7 +34,7 @@ class progress_bar_window(tk.Tk):
     self.head_label = label
     label.pack(side="top")
 
-    progress_bar = ttk.Progressbar(master=self, maximum=self.max_value, length=100)
+    progress_bar = ttk.Progressbar(master=self, length=200)
     self.progress_bar = progress_bar
     progress_bar.pack(side="top")
 
@@ -47,10 +49,10 @@ class progress_bar_window(tk.Tk):
       while self.email_counter < self.max_value:
           current_email = self.all_emails[self.email_counter]
           if self.label_input == SENDER_NAME_C:
-            current_email_name = self.oc.extract_sender_name_from_email(current_email)
+            current_email_name = self.data_extractor.extract_sender_name(current_email)
             self.ia.record_individual_sender(current_email_name)
           elif self.label_input == SENDER_ADDRESS_C:
-            current_email_address = self.oc.extract_sender_address_from_email(current_email)
+            current_email_address = self.data_extractor.extract_sender_address(current_email)
             self.ia.record_individual_email_address(current_email_address)
           else:
             raise RuntimeError("Not tracking by name or address")

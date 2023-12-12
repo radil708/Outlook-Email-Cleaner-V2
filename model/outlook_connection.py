@@ -83,32 +83,6 @@ class outlook_connection():
         for email_item in self.emails_to_delete:
             email_item.Delete()
 
-    def extract_sender_address_from_email(self, email_item: client.CDispatch) -> str:
-        address = email_item.SenderEmailAddress
-        #TODO this might hit error if no string returned by attribute
-        if address == None or address.isspace() or address == "":
-            return " "
-        else:
-            return address.lower().strip()
-
-    def extract_sender_name_from_email(self, email_item: client.CDispatch) -> str:
-        name = email_item.SenderName
-        if name == None or name.isspace() or name == "":
-            return " "
-        else:
-            return name
-
-    def extract_timestamp_from_email(self, email_item: client.CDispatch) -> datetime:
-        return datetime.fromtimestamp(email_item.SentOn.timestamp(), email_item.SentOn.tzinfo)
-
-    def extract_subject_from_email(self, email_item: client.CDispatch) -> str:
-        email_subject = email_item.Subject
-
-        if email_subject == None or email_subject.isspace() or email_subject == "":
-            return " "
-        else:
-            return email_subject.lower().strip()
-
 
     def close_connection(self):
         #self.com_obj.Close()

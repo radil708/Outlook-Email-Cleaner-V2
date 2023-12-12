@@ -5,7 +5,8 @@ from view.tkinter_welcome_window import welcome_window
 from event_assigner import event_assigner
 from view.progressbar_window import progress_bar_window
 from model.constants import *
-
+from view.email_deletion_progress_window import email_deletion_progress_window
+from tkinter import messagebox, Tk
 TEST = False
 
 class app_controller():
@@ -87,7 +88,7 @@ class app_controller():
     self.main_window.set_current_account_label(current_user)
     self.outlook_connection.set_user(current_user)
     self.main_window.set_function_analyze(self.analyze_by_sender_names, self.analyze_by_addresses) #TODO change func
-
+    self.main_window.run_button.configure(command=self.run_deletion_command)
 
     self.assign_clear_buttons()
     self.main_window.switch_act_button.configure(command=self.go_back_to_select_accounts_command)
@@ -104,6 +105,21 @@ class app_controller():
 
   def assign_select_button(self):
     pass
+
+  def run_deletion_command(self):
+    #check if sure
+    user_input = self.main_window.get_all_entries()
+    self.model.add_raw_user_date(user_input)
+    self.model.setup_condition_checks()
+
+    if self.model.are_conditions_empty():
+      root_wind = Tk().withdraw()
+      messagebox.showinfo("Error","You Must Enter Some Condition Before Proceeding")
+      return
+
+    else:
+      deletion_progress_window = email_deletion_progress_window(self.outlook_connection, self.model)
+      deletion_progress_window.mainloop()
 
 #TODO delete this func
 def test_main_window():

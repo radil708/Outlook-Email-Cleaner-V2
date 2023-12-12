@@ -160,7 +160,7 @@ class main_window(tk.Tk):
     addresses_list_as_str = self.address_widgets_dict["entry"].get_ignore_hint()
     keywords_list_as_str = self.keywords_widgets_dict["entry"].get_ignore_hint()
     start_date_as_str = self.date_start_widgets_dict["entry"].get_ignore_hint()
-    end_date_as_str = self.date_end_widgets_dict_widgets_dict["entry"].get_ignore_hint()
+    end_date_as_str = self.date_end_widgets_dict["entry"].get_ignore_hint()
 
     return {"names" : names_list_as_str, "email addresses" : addresses_list_as_str,
             "keywords":keywords_list_as_str, "start date": start_date_as_str, "end date" : end_date_as_str}
