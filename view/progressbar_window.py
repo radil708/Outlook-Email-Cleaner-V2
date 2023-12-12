@@ -24,6 +24,10 @@ class progress_bar_window(tk.Tk):
     self.after(1000, self.increment)
 
   def setup(self):
+    '''
+    Must call to place widgets in right place
+    :return:
+    '''
     label = tk.Label(master=self, text=self.head_label_text)
     self.head_label = label
     label.pack(side="top")
@@ -45,6 +49,11 @@ class progress_bar_window(tk.Tk):
           if self.label_input == SENDER_NAME_C:
             current_email_name = self.oc.extract_sender_name_from_email(current_email)
             self.ia.record_individual_sender(current_email_name)
+          elif self.label_input == SENDER_ADDRESS_C:
+            current_email_address = self.oc.extract_sender_address_from_email(current_email)
+            self.ia.record_individual_email_address(current_email_address)
+          else:
+            raise RuntimeError("Not tracking by name or address")
           self.progress_bar.step(self.bar_increment_value)
           self.email_counter += 1
           self.loading_text = "Analyzed" + " " + str(self.email_counter) + " of " + str(self.max_value)

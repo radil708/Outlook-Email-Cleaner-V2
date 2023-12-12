@@ -34,5 +34,16 @@ class entry_with_placeholder(Entry):
       self.place_hint()
       self.master.focus_set() #remove cursor from entry widget
 
+  def get_ignore_hint(self):
+    '''
+    Helper function. Will return empty string if
+    user did not put anything in box.
+    :return:
+    '''
+    if self['fg'] == self.hint_color:
+      return ''
+    else:
+      return self.get()
+
 
 

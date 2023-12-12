@@ -25,6 +25,9 @@ class cleanup_model():
         different addresses
         """
 
+        self.or_conditions_to_check = []
+        self.and_conditions_to_check = []
+
     def reset_deletion_conditions(self):
         '''
         Clears out all deletion parameters. This will be called after every round of deletion.
@@ -35,6 +38,9 @@ class cleanup_model():
         self.target_end_date = None
         self.target_subject_keyphrases = []
         self.target_sender_names = []
+
+        self.or_conditions_to_check = []
+        self.and_conditions_to_check = []
 
     def add_individual_sender_email(self, sender_email_in : str) -> None:
         '''
@@ -83,7 +89,10 @@ class cleanup_model():
         :param date_input: @str A representation of a date in the format mm/dd/yyyy
         :return: None
         '''
-        self.target_start_date = self.date_utility.convert_string_to_date(date_input)
+        if date_input.isspace() or date_input == "" or date_input == None:
+            return
+        else:
+            self.target_start_date = self.date_utility.convert_string_to_date(date_input)
 
 
     def set_end_date(self, date_input: str) -> None:
@@ -93,7 +102,10 @@ class cleanup_model():
         :param date_input: @str A representation of a date in the format mm/dd/yyyy
         :return: None
         '''
-        self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
+        if date_input.isspace() or date_input == "" or date_input == None:
+            return
+        else:
+            self.target_end_date = self.date_utility.convert_string_to_date(date_input,endtime=True)
 
     def is_address_in_target_list(self, email_address: str) -> bool:
         '''
@@ -202,16 +214,41 @@ class cleanup_model():
         :return:
         '''
 
+        if user_input.isspace() or user_input == "" or user_input == None:
+            return
         delimited_user_choices = self.digest_input(user_input, delimiter=',', apply_lower=True)
         for choice in delimited_user_choices:
             self.add_individual_sender_email(choice)
 
     def add_all_sender_names(self, user_input: str):
+        if user_input.isspace() or user_input == "" or user_input == None:
+            return
         delimited_user_choices = self.digest_input(user_input,delimiter="|", apply_lower=True)
         for choice in delimited_user_choices:
             self.add_individual_sender_name(choice)
 
 
+    def add_all_keywords(self, user_input: str):
+        # TODO test
+        if user_input.isspace() or user_input == "" or user_input == None:
+            return
+        delimited_user_choices = self.digest_input(user_input, delimiter=',', apply_lower=True)
+        for choice in delimited_user_choices:
+            self.add_individual_subject_keyword(choice)
+
+    def add_raw_user_date(self, user_input : dict):
+        #TODO test
+        '''
+
+        :param user_input: @list the output of get_all_entries from tkinter_main_window.py
+        :return:
+        '''
+
+        self.add_all_sender_names(user_input["names"])
+        self.add_all_sender_emails(user_input["email addresses"])
+        self.add_all_keywords(user_input["keywords"])
+        self.set_start_date(user_input["start date"])
+        self.set_end_date(user_input["end date"])
 
 
 

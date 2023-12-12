@@ -5,6 +5,10 @@ from model.outlook_connection import outlook_connection
 from view.entry_with_placeholder import entry_with_placeholder
 from datetime import datetime as dt
 from model.constants import *
+from tkinter import messagebox
+
+#TODO make the windows centered
+
 class file_saving_window(tk.Tk):
 
   def __init__(self, ia: inbox_analyzer, emails_actually_analyzed: int, save_cond_str):
@@ -18,6 +22,7 @@ class file_saving_window(tk.Tk):
     self.default_file_name = self.save_cond_str + " Analysis " + self.unique_modifier + ".txt"
     self.setup()
     self.save_button.configure(command=self.button_command)
+    self.file_name = ''
 
 
 
@@ -27,12 +32,12 @@ class file_saving_window(tk.Tk):
     user_entry = self.file_name_entry.get()
 
     if user_entry.isspace() or self.file_name_entry['fg'] == self.file_name_entry.hint_color:
-      filepath = self.default_file_name
+      self.file_name = self.default_file_name
     else:
-      filepath = user_entry
+      self.file_name = user_entry
 
     #TODO can add ../ to go one folder up
-    filepath = "../" + filepath.strip()
+    filepath = "../" + self.file_name.strip()
 
     if not filepath.endswith(".txt"):
       filepath += ".txt"
@@ -42,7 +47,9 @@ class file_saving_window(tk.Tk):
     if self.save_cond_str == SENDER_ADDRESS_C:
       self.ia.write_email_address_file(filepath)
 
+    messagebox.showinfo("Report Successfully Saved", f"{filepath} has been saved")
     self.quit()
+    self.destroy()
 
   def setup(self):
     label = tk.Label(master=self, text=f"Save Results From Analysis of {self.emails_actually_analyzed} Emails")

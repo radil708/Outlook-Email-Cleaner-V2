@@ -50,7 +50,6 @@ class app_controller():
     helper func to open welome window
     :return:
     '''
-
     self.progress_bar_window = progress_bar_window(self.outlook_connection, self.inbox_analyzer,SENDER_NAME_C)
     self.progress_bar_window.setup()
     self.progress_bar_window.mainloop()
@@ -68,12 +67,10 @@ class app_controller():
     self.welcome_window.select_button.configure(command=self.pass_user_choice_to_main_window)
     self.welcome_window.mainloop()
 
-  def analyze_by_name_func(self):
-    pass
-    #TODO do this
-    #Run outlook connection command
-    #show window popup please wait
-    #show ask for name of file
+  def analyze_by_addresses(self):
+    self.progress_bar_window = progress_bar_window(self.outlook_connection, self.inbox_analyzer, SENDER_ADDRESS_C)
+    self.progress_bar_window.setup()
+    self.progress_bar_window.mainloop()
 
   def pass_user_choice_to_main_window(self, *args):
     '''
@@ -89,7 +86,7 @@ class app_controller():
     self.main_window = main_window()
     self.main_window.set_current_account_label(current_user)
     self.outlook_connection.set_user(current_user)
-    self.main_window.set_function_analyze(self.analyze_by_sender_names, lambda: print("Hello")) #TODO change func
+    self.main_window.set_function_analyze(self.analyze_by_sender_names, self.analyze_by_addresses) #TODO change func
 
 
     self.assign_clear_buttons()

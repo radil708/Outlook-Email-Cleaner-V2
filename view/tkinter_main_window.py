@@ -83,9 +83,6 @@ class main_window(tk.Tk):
 
     self.analyze_dropdown = tk.Menu(master=self.toolbar_menu, tearoff=False)
     self.toolbar_menu.add_cascade(label="Analyze", menu=self.analyze_dropdown)
-    #self.analyze_dropdown.add_command(label="By Sender Address") #maybe add these settings after somehow?
-    #self.analyze_dropdown.add_command(label="By Sender Name")
-    #self.analyze_dropdown.ch
 
 
   def make_text_input_frames(self, left_side_label : str, text_gray_hint: str, row: int):
@@ -157,6 +154,17 @@ class main_window(tk.Tk):
     for i in range(len(dict_inputs_keys)):
       temp_dict[dict_inputs_keys[i]] = date_frame_widgets[i]
     return temp_dict
+
+  def get_all_entries(self):
+    names_list_as_str = self.name_widgets_dict["entry"].get_ignore_hint()
+    addresses_list_as_str = self.address_widgets_dict["entry"].get_ignore_hint()
+    keywords_list_as_str = self.keywords_widgets_dict["entry"].get_ignore_hint()
+    start_date_as_str = self.date_start_widgets_dict["entry"].get_ignore_hint()
+    end_date_as_str = self.date_end_widgets_dict_widgets_dict["entry"].get_ignore_hint()
+
+    return {"names" : names_list_as_str, "email addresses" : addresses_list_as_str,
+            "keywords":keywords_list_as_str, "start date": start_date_as_str, "end date" : end_date_as_str}
+
 
 
 
