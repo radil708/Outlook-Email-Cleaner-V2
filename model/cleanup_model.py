@@ -32,6 +32,18 @@ class cleanup_model():
         self.or_conditions_to_check = []
         self.and_conditions_to_check = []
 
+    def print_conditions(self):
+        '''
+        Helper functions for tests, not used in model
+        :return:
+        '''
+        print(f"Target Names: {self.target_sender_names}")
+        print(f"Target Emails: {self.target_sender_emails}")
+        print(f"Target Keywords: {self.target_subject_keyphrases}")
+        print(f"Target Start Date: {self.target_start_date}")
+        print(f"Target End Date: {self.target_end_date}")
+        print("--------------------------")
+
     def reset_deletion_conditions(self):
         '''
         Clears out all deletion parameters. This will be called after every round of deletion.
@@ -267,7 +279,7 @@ class cleanup_model():
         for choice in delimited_user_choices:
             self.add_individual_subject_keyword(choice)
 
-    def add_raw_user_date(self, user_input : dict):
+    def add_raw_user_data(self, user_input : dict):
         #TODO test
         '''
 
@@ -284,7 +296,7 @@ class cleanup_model():
     def are_conditions_empty(self) -> bool:
         #TODO test in conjunction with add_raw_user_date
         '''
-        Returns True if no conditions were addedd
+        Returns True if no conditions were added
         :return:
         '''
 

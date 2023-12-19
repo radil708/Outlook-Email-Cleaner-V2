@@ -1,6 +1,7 @@
 import datetime
 import unittest
 from model.cleanup_model import cleanup_model
+from model.cleanup_custom_exceptions import *
 
 
 class test_cleanup_model(unittest.TestCase):
@@ -184,6 +185,321 @@ class test_cleanup_model(unittest.TestCase):
     self.assertTrue("linkedin" in model.target_sender_names)
     self.assertTrue("alice" in model.target_sender_names)
     self.assertEqual(expected_list, model.target_sender_names)
+
+  def test_add_all_keywords(self):
+    model = self.model
+    keyword_inputs = "Hello, world , foo,bar "
+    expected_list = ["hello","world","foo","bar"]
+    model.add_all_keywords(keyword_inputs)
+    self.assertTrue("hello" in model.target_subject_keyphrases)
+    self.assertTrue("world" in model.target_subject_keyphrases)
+    self.assertTrue("foo" in model.target_subject_keyphrases)
+    self.assertTrue("bar" in model.target_subject_keyphrases)
+    self.assertEqual(expected_list, model.target_subject_keyphrases)
+
+  def test_add_raw_user_data_empty(self):
+    '''
+    Test when user input is all blank/empty
+    :return:
+    '''
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    model.add_raw_user_data(user_input)
+
+    self.assertEqual([], model.target_sender_names)
+    self.assertEqual(None, model.target_start_date)
+    self.assertEqual(None, model.target_end_date)
+    self.assertEqual([], model.target_subject_keyphrases)
+    self.assertEqual([], model.target_sender_emails)
+
+  def test_add_raw_user_data_single_name(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["names"] = "Swanson, Joe"
+
+    model.add_raw_user_data(user_input)
+
+    self.assertEqual(["swanson, joe"], model.target_sender_names) #should be lower case here
+    #everything else should be blank
+    self.assertEqual(None, model.target_start_date)
+    self.assertEqual(None, model.target_end_date)
+    self.assertEqual([], model.target_subject_keyphrases)
+    self.assertEqual([], model.target_sender_emails)
+
+  def test_add_raw_user_data_multiple_names(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["names"] = "Swanson, Joe | Griffin, Peter | linkedIn"
+
+    model.add_raw_user_data(user_input)
+    self.assertEqual(["swanson, joe", "griffin, peter", "linkedin"], model.target_sender_names)
+
+
+  def test_add_raw_user_data_single_email_address(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["email addresses"] = "Jane@Doe.Gov"
+    model.add_raw_user_data(user_input)
+    self.assertEqual(["jane@doe.gov"], model.target_sender_emails)
+    self.assertEqual([], model.target_sender_names)
+    self.assertEqual(None, model.target_start_date)
+    self.assertEqual(None, model.target_end_date)
+    self.assertEqual([], model.target_subject_keyphrases)
+
+  def test_add_raw_user_data_multiple_email_address(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["email addresses"] = "Jane@Doe.Gov, Doctor@Who.com , cAts@cool.edu "
+    model.add_raw_user_data(user_input)
+    self.assertEqual(["jane@doe.gov", "doctor@who.com", "cats@cool.edu"], model.target_sender_emails)
+
+
+  def test_add_raw_user_single_keyword(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["keywords"] = "hElLo"
+
+    model.add_raw_user_data(user_input)
+    self.assertEqual(["hello"], model.target_subject_keyphrases)
+    self.assertEqual([], model.target_sender_names)
+    self.assertEqual(None, model.target_start_date)
+    self.assertEqual(None, model.target_end_date)
+    self.assertEqual([],model.target_sender_emails)
+
+
+  def test_add_raw_user_multiple_keywords(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    #TODO allow punctuation??? - Probably Not.. might have to apply when reading subjects though
+    user_input["keywords"] = "hElLo, woRld , sushi,is,my, Fave"
+
+    model.add_raw_user_data(user_input)
+    self.assertEqual(["hello", "world", "sushi", "is", "my","fave"], model.target_subject_keyphrases)
+
+  def test_add_raw_user_start_date(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+    user_input["start date"] = "03/23/1970"
+    model.add_raw_user_data(user_input)
+    expected_date = model.date_utility.convert_string_to_date("03/23/1970")
+
+    self.assertEqual(expected_date, model.target_start_date)
+
+  def test_add_raw_user_start_date_invalid_input(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    #missing both '/'
+    user_input["start date"] = "03231970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # missing either '/'
+    user_input["start date"] = "03/231970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # missing both '/'
+    user_input["start date"] = "0323/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    #invalid months o
+    user_input["start date"] = "0/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid months empty
+    user_input["start date"] = "/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid months negative
+    user_input["start date"] = "-1/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day 0
+    user_input["start date"] = "5/0/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day empty
+    user_input["start date"] = "5//1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day beyond 31
+    user_input["start date"] = "5/32/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    #invalid year empty
+    user_input["start date"] = "5/32/"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid year less than 4 digits
+    user_input["start date"] = "5/32/01"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid year greater than 4 digits
+    user_input["start date"] = "5/32/20001"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+  def test_add_raw_user_end_date_invalid_input(self):
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    # missing both '/'
+    user_input["end date"] = "03231970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # missing either '/'
+    user_input["end date"] = "03/231970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # missing both '/'
+    user_input["end date"] = "0323/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid months o
+    user_input["end date"] = "0/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid months empty
+    user_input["end date"] = "/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid months negative
+    user_input["end date"] = "-1/23/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day 0
+    user_input["end date"] = "5/0/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day empty
+    user_input["end date"] = "5//1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid day beyond 31
+    user_input["end date"] = "5/32/1970"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid year empty
+    user_input["end date"] = "5/32/"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid year less than 4 digits
+    user_input["end date"] = "5/32/01"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+    # invalid year greater than 4 digits
+    user_input["end date"] = "5/32/20001"
+    with self.assertRaises(DateConversionError):
+      model.add_raw_user_data(user_input)
+
+  #TODO make a check to see if end date earlier than start date
+
+  def test_are_conditions_empty_no_conditions(self):
+    model = self.model
+    self.assertTrue(model.are_conditions_empty())
+
+  def test_are_conditions_empty_all_conditions_met(self):
+    model = self.model
+
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    expected_values = ["Mr. Pants", "yomama@whatever.com", "word to your mama", "02/28/2010", "5/18/2011"]
+    for i in range(len(expected_keys)):
+      user_input[expected_keys[i]] = expected_values[i]
+    model.add_raw_user_data(user_input)
+
+    self.assertFalse(model.are_conditions_empty())
+
+  def test_are_conditions_empty_single_conditions(self):
+    print_conditions = False
+    model = self.model
+
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    expected_values = ["Mr. Pants", "yomama@whatever.com", "word to your mama", "02/28/2010", "5/18/2011"]
+    counter = 0
+    for i in range(len(expected_keys)):
+      for j in range(len(expected_values)):
+        if j == counter:
+          user_input[expected_keys[j]] = expected_values[j]
+        else:
+          user_input[expected_keys[j]] = ''
+
+
+      model.add_raw_user_data(user_input)
+      self.assertFalse(model.are_conditions_empty())
+      counter += 1
+      if print_conditions is True:
+        model.print_conditions()
+      model.reset_deletion_conditions()
+
+  #TODO test combination of conditions for are conditions empty
+
+
+
+
+
+
+
+
 
 
 def main():

@@ -113,7 +113,7 @@ class app_controller():
     #check conversion errors too
     try:
       user_input = self.main_window.get_all_entries()
-      self.model.add_raw_user_date(user_input)
+      self.model.add_raw_user_data(user_input)
       self.model.setup_condition_checks()
 
     except DateConversionError:
@@ -122,12 +122,12 @@ class app_controller():
       return
 
     if self.model.are_conditions_empty():
-      messagebox.showinfo("Error","You Must Enter Some Condition Before Proceeding")
+      messagebox.showerror("Error","You Must Enter At Least 1 Condition")
       self.model.reset_deletion_conditions()
       return
     if self.model.is_only_one_date_condition_filled():
       self.model.reset_deletion_conditions()
-      messagebox.showinfo("Error", "If start date has a value, end date must too and vice versa")
+      messagebox.showerror("Error", "If start date has a value, end date must too and vice versa")
       return
 
     else:
