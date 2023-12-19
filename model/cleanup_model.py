@@ -307,7 +307,7 @@ class cleanup_model():
         else:
             return False
 
-    def is_only_one_date_condition_filled(self):
+    def is_only_one_date_condition_filled(self): #TODO not used?
         if (self.target_start_date != None and self.target_end_date == None) \
             or (self.target_end_date != None and self.target_start_date == None):
             return True

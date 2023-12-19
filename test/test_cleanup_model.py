@@ -492,6 +492,107 @@ class test_cleanup_model(unittest.TestCase):
       model.reset_deletion_conditions()
 
   #TODO test combination of conditions for are conditions empty
+  #maybe write a loop similar to before to get first 3 conditions in varying
+  #configs
+  #also need to do combo with dates
+
+
+  def test_are_conditions_empty_combo(self):
+    print_conditions = False
+    model = self.model
+
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    expected_values = ["Mr. Pants", "yomama@whatever.com", "word to your mama", "02/28/2010", "5/18/2011"]
+    counter = 0
+    for i in range(len(expected_keys)):
+      for j in range(len(expected_values)):
+        if j <= counter:
+          user_input[expected_keys[j]] = expected_values[j]
+        else:
+          user_input[expected_keys[j]] = ''
+
+      model.add_raw_user_data(user_input)
+      self.assertFalse(model.are_conditions_empty())
+      counter += 1
+      if print_conditions is True:
+        model.print_conditions()
+      model.reset_deletion_conditions()
+
+  def test_is_only_one_date_condition_filled(self):
+    #only start date filled
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["start date"] = "10/10/2020"
+    model.add_raw_user_data(user_input)
+
+    self.assertTrue(model.is_only_one_date_condition_filled())
+
+    #only end date filled
+    model.reset_deletion_conditions()
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+    user_input["end date"] = "10/11/2020"
+    model.add_raw_user_data(user_input)
+    self.assertTrue(model.is_only_one_date_condition_filled())
+
+    #both dates are filled
+    model.reset_deletion_conditions()
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+    user_input["start date"] = "10/10/2020"
+    user_input["end date"] = "10/11/2020"
+    model.add_raw_user_data(user_input)
+    self.assertFalse(model.is_only_one_date_condition_filled())
+
+    #neither dates filled
+    model.reset_deletion_conditions()
+    self.assertFalse(model.is_only_one_date_condition_filled())
+
+  def test_are_both_date_conditions_filled(self):
+    # only start date filled
+    model = self.model
+    user_input = {}
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+
+    user_input["start date"] = "10/10/2020"
+    model.add_raw_user_data(user_input)
+
+    self.assertFalse(model.are_both_date_conditions_filled())
+
+    # only end date filled
+    model.reset_deletion_conditions()
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+    user_input["end date"] = "10/11/2020"
+    model.add_raw_user_data(user_input)
+    self.assertFalse(model.are_both_date_conditions_filled())
+
+    # both dates are filled
+    model.reset_deletion_conditions()
+    expected_keys = ["names", "email addresses", "keywords", "start date", "end date"]
+    for each_key in expected_keys:
+      user_input[each_key] = ''
+    user_input["start date"] = "10/10/2020"
+    user_input["end date"] = "10/11/2020"
+    model.add_raw_user_data(user_input)
+    self.assertTrue(model.are_both_date_conditions_filled())
+
+    # neither dates filled
+    model.reset_deletion_conditions()
+    self.assertFalse(model.are_both_date_conditions_filled())
+
+
+
 
 
 
