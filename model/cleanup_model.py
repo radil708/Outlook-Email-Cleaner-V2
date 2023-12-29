@@ -141,7 +141,7 @@ class cleanup_model():
             return False
 
     def check_email_address(self,email_item: client.CDispatch) -> bool:
-        # TODO test
+        # TODO Test
         return self.is_address_in_target_list(self.data_extractor_utility.extract_sender_address(email_item))
 
     def is_name_in_target_list(self, sender_name: str) -> bool:
@@ -159,7 +159,7 @@ class cleanup_model():
             return False
 
     def check_email_name(self,email_item: client.CDispatch) -> bool:
-        #TODO test
+        #TODO Test
         '''
 
         :param email_item:
@@ -272,19 +272,20 @@ class cleanup_model():
 
 
     def add_all_keywords(self, user_input: str):
-        # TODO test
+        # TODO Test
         if user_input.isspace() or user_input == "" or user_input == None:
             return
         delimited_user_choices = self.digest_input(user_input, delimiter=',', apply_lower=True)
         for choice in delimited_user_choices:
             self.add_individual_subject_keyword(choice)
 
-    def add_raw_user_data(self, user_input : dict):
-        #TODO test
+    def add_raw_user_data(self, user_input : dict) -> None:
         '''
-
+        Takes in user input in the form of a dictionary and splits it
+        into specific condition lists used by this program to determine
+        what to check against when searching for emails.
         :param user_input: @list the output of get_all_entries from tkinter_main_window.py
-        :return:
+        :return: None
         '''
 
         self.add_all_sender_names(user_input["names"])
@@ -294,10 +295,11 @@ class cleanup_model():
         self.set_end_date(user_input["end date"])
 
     def are_conditions_empty(self) -> bool:
-        #TODO test in conjunction with add_raw_user_date
         '''
-        Returns True if no conditions were added
-        :return:
+        Returns True if no conditions were added by the user. This function
+        is used as a flag to prevent the user from accidentally deleting
+        all emails in their inbox.
+        :return: @bool True if no conditions are set, False otherwise
         '''
 
         if self.target_sender_emails == [] and self.target_start_date == None \
@@ -307,7 +309,15 @@ class cleanup_model():
         else:
             return False
 
-    def is_only_one_date_condition_filled(self): #TODO not used?
+    def is_only_one_date_condition_filled(self) -> bool:
+        '''
+        Helper function to run_condition_check.
+        This function is used to check if only one date condition was filled.
+        In order for the program to run, either both date conditions must be
+        set or no date conditions must be set.
+        :return: @bool True if only one date condition (start or end) was filled,
+                    False otherwise
+        '''
         if (self.target_start_date != None and self.target_end_date == None) \
             or (self.target_end_date != None and self.target_start_date == None):
             return True
@@ -317,16 +327,21 @@ class cleanup_model():
 
 
     def are_both_date_conditions_filled(self):
-        # TODO test in conjunction with add_raw_user_date
+        '''
+        Helper function to  run_condition_check.
+        :return:
+        '''
         if self.target_start_date == None or self.target_end_date == None:
             return False
         else:
             return True
 
     def setup_condition_checks(self):
-        #TODO test and run before run_condition_check
+        #TODO Test and run before run_condition_check
         '''
-
+        This function determines which functions are used to check the
+        attributes of an email when finding emails that match user set conditions.
+        This MUST be called before calling run_condition_checks
         :return:
         '''
         if self.target_sender_emails != []:
@@ -336,7 +351,15 @@ class cleanup_model():
         if self.target_subject_keyphrases != []:
             self.or_conditions_to_check.append(self.check_subject)
 
-    def run_condition_check(self, email_item: client.CDispatch) -> bool:
+    def run_condition_check(self, email_item) -> bool:
+        '''
+        This is the actual function used to check if an email matches
+        any user set conditions.
+        :param email_item: @client.CDispatch the email the program is looking at to see
+                                it matches the the conditions set by the user
+        :return: @bool True if the email contains attributes that match
+                    the target conditions for deletion as set by the user.
+        '''
         or_match = False
         date_match = False
 

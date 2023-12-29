@@ -145,7 +145,7 @@ def test_link_welcome_to_main():
   y = app_controller()
   y.open_welcome_window()
 
-  #test
+  #Test
 
 def main():
   test_link_welcome_to_main()

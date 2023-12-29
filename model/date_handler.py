@@ -103,7 +103,7 @@ class date_handler():
 		return lower_bound <= target_date <= upper_bound
 
 	def convert_string_to_date(self, date_input: str, endtime: bool = False):
-		#TODO test
+		#TODO Test
 		date_as_list = self.process_str_date(date_input)
 		return self.convert_list_into_datetime(date_as_list, endtime)
 

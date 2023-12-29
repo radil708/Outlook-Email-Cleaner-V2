@@ -1,6 +1,6 @@
 venv
 .idea
-test/developer_test_helper
+Test/developer_test_helper
 /sender_name_analysis.txt
 /sender_address_analysis.txt
 research_variables.py
