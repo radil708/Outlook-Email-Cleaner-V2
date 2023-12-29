@@ -81,7 +81,7 @@ class app_controller():
     string_var = StringVar()
 
     filepath = self.model.select_file()
-
+    #TODO add error dialogue if file does not match any set conditions
     import_type, import_str = self.model.extract_info_from_analysis_file(filepath)
     #TODO function for keywords
     if import_type == SENDER_NAME_C:
