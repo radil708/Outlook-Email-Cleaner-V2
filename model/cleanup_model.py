@@ -5,6 +5,7 @@ from model.date_handler import date_handler
 import win32com.client as client
 from model.email_item_data_extractor import email_item_data_extractor
 from model.cleanup_custom_exceptions import *
+from model.constants import *
 
 class cleanup_model():
 
@@ -223,7 +224,7 @@ class cleanup_model():
 
         tkinter.Tk().withdraw()  # prevents an empty tkinter window from appearing
 
-        folder_path = filedialog.askopenfilenames(initialdir=os.getcwd(), title="Select file")
+        folder_path = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select file")
 
         return folder_path
 
@@ -380,6 +381,33 @@ class cleanup_model():
             date_match = self.is_email_between_dates(email_item)
 
         return or_match and date_match
+
+    def extract_info_from_analysis_file(self, filepath: str) -> tuple:
+        #filepath = self.select_file()
+        #Todo add a loading??
+        list_keep = []
+        line_counter = 0
+        type= ''
+        with open(filepath, "r") as filereader:
+            for line in filereader.readlines():
+                if line_counter == 0:
+                    line_split = line.split(":")
+                    type = line_split[0].strip()
+                else:
+                    line_split = line.split(":")
+                    list_keep.append(line_split[0].strip())
+                line_counter+= 1
+
+        output = ''
+
+        if type == SENDER_NAME_C:
+            output = ' | '.join(list_keep)
+        else:
+            output = ' , '.join(list_keep)
+
+        return type, output
+
+
 
 
 

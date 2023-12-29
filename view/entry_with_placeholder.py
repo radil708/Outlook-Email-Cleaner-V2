@@ -45,5 +45,8 @@ class entry_with_placeholder(Entry):
     else:
       return self.get()
 
+  def set_text_user_input_color(self):
+    self['fg'] = self.user_input_color
+
 
 

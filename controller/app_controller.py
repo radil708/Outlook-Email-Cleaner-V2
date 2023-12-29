@@ -9,6 +9,8 @@ from view.email_deletion_progress_window import email_deletion_progress_window
 from tkinter import messagebox, Tk
 from model.cleanup_custom_exceptions import *
 TEST = False
+from tkinter import StringVar
+from view.entry_with_placeholder import entry_with_placeholder
 
 class app_controller():
 
@@ -75,6 +77,22 @@ class app_controller():
     self.progress_bar_window.setup()
     self.progress_bar_window.mainloop()
 
+  def import_analysis_file(self):
+    string_var = StringVar()
+
+    filepath = self.model.select_file()
+
+    import_type, import_str = self.model.extract_info_from_analysis_file(filepath)
+    #TODO function for keywords
+    if import_type == SENDER_NAME_C:
+      e_widge : entry_with_placeholder = self.main_window.name_widgets_dict["entry"]
+    else:
+      e_widge : entry_with_placeholder = self.main_window.address_widgets_dict["entry"]
+
+    e_widge.set_text_user_input_color()
+    e_widge.config(textvariable=string_var)
+    string_var.set(import_str)
+
   def pass_user_choice_to_main_window(self, *args):
     '''
     Links welcome window to main window
@@ -90,6 +108,7 @@ class app_controller():
     self.main_window.set_current_account_label(current_user)
     self.outlook_connection.set_user(current_user)
     self.main_window.set_function_analyze(self.analyze_by_sender_names, self.analyze_by_addresses) #TODO change func
+    self.main_window.set_import_functions_toolbar(self.import_analysis_file)
     self.main_window.run_button.configure(command=self.run_deletion_command)
 
     self.assign_clear_buttons()

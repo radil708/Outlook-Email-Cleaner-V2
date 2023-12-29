@@ -6,5 +6,7 @@ Test/developer_test_helper
 research_variables.py
 /controller/test_coord.py
 /view/e_placeholder.py
+/file_1.txt
+/file_2.txt
 
 
